@@ -3,10 +3,15 @@ document.documentElement.addEventListener("mousedown", () => {
   if (Tone.context.state !== "running") Tone.context.resume();
 });
 
-const Lyre = new Tone.Player(
-  "https://monlim.github.io/Borderlands/Lyre.mp3"
-).toDestination();
+let currentMovement = 1;
+
 const gainNode = new Tone.Gain(0).toDestination();
+//const filter = new Tone.Filter(1500, "bandpass").connect(gainNode);
+const pitchShift = new Tone.PitchShift(0).connect(gainNode);
+const Lyre = new Tone.Player(
+  "https://monlim.github.io/Borderlands/Audio/LyreReson.mp3"
+).connect(pitchShift);
+
 
 // let t1on = false;
 // let accelActivate = 2;
@@ -23,26 +28,31 @@ const gainNode = new Tone.Gain(0).toDestination();
 // }
 
 //listen for updates to Midi2 trigger note
-movement.onchange = function () {
+movement.onchange = function(){
   currentMovement = movement.value;
 };
 
+
 function handleOrientation(event) {
-  // if (event.beta < 10) pitchShift.pitch = 0;
-  // if (10 <= event.beta && event.beta < 30) pitchShift.pitch = 4;
-  // if (30 <= event.beta && event.beta < 60) pitchShift.pitch = 7;
-  // if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 12;
-  // if (event.beta >= 100) pitchShift.pitch = 16;
+  pitchShift.pitch = scaleValue(event.beta, [-180, 180], [0, 12]);
+//   if (event.beta < 10) pitchShift.pitch = 0;
+//   if (10 <= event.beta && event.beta < 30) pitchShift.pitch = 4;
+//   if (30 <= event.beta && event.beta < 60) pitchShift.pitch = 7;
+//   if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 12;
+//   if (event.beta >= 100) pitchShift.pitch = 16;
+
 }
+
 
 let accel;
 function handleMotion(event) {
+  
   accel =
     event.acceleration.x ** 2 +
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
   // updateFieldIfNotNull('All', accel);
-  // GA.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
+ // GA.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
   //triggerSampler(accel);
 }
 
@@ -59,11 +69,11 @@ demo_button.onclick = function (e) {
   ) {
     DeviceMotionEvent.requestPermission();
   }
-
+  
   if (is_running) {
     window.removeEventListener("devicemotion", handleMotion);
     window.removeEventListener("deviceorientation", handleOrientation);
-    window.removeEventListener("shake", shakeEventDidOccur, false);
+    //window.removeEventListener("shake", shakeEventDidOccur, false);
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
     //myShakeEvent.stop();
@@ -74,13 +84,13 @@ demo_button.onclick = function (e) {
   } else {
     window.addEventListener("devicemotion", handleMotion);
     window.addEventListener("deviceorientation", handleOrientation);
-    window.addEventListener("shake", shakeEventDidOccur, false);
+    //window.addEventListener("shake", shakeEventDidOccur, false);
     document.getElementById("start_demo").innerHTML = "STOP";
     document.getElementById("circle").style.background = "red";
     if (currentMovement === 1) Lyre.start();
     //myShakeEvent.start();
     //Tone.Transport.start();
-    //gainNode.gain.rampTo(1, 0.1);
+    gainNode.gain.rampTo(1, 0.1);
     is_running = true;
   }
 };
