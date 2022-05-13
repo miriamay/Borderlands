@@ -4,14 +4,15 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v9");
+console.log("v10");
 
 const gainNode = new Tone.Gain(0).toDestination();
+const lowpass = new Tone.Filter(18000, "lowpass").toDestination();
 const phaser = new Tone.Phaser({
   frequency: 15,
   octaves: 5,
   baseFrequency: 1000
-}).connect(gainNode);
+}).connect(lowpass);
 const pitchShift = new Tone.PitchShift(0).connect(phaser);
 const Lyre = new Tone.Player(
   "https://monlim.github.io/Borderlands/Audio/LyreReson.mp3"
@@ -22,7 +23,7 @@ const Flute = new Tone.Player({
   playbackRate: 1,
   loopStart: 0,
   loopEnd: 1
-}).connect(gainNode);
+}).connect(lowpass);
 
 
 // let t1on = false;
