@@ -37,6 +37,10 @@ movement.onchange = function(){
   currentMovement = movement.value;
 };
 
+function updateFieldIfNotNull(fieldName, value, precision=10){
+  if (value != null)
+    document.getElementById(fieldName).innerHTML = value.toFixed(precision);
+}
 
 function handleOrientation(event) {
   //pitchShift.pitch = scaleValue(event.beta, [-180, 180], [0, 12]);
