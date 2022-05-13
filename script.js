@@ -4,10 +4,10 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v12");
+console.log("v13");
 
 const gainNode = new Tone.Gain(0).toDestination();
-const lowpass = new Tone.Filter(18000, "lowpass").toDestination();
+const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
 const phaser = new Tone.Phaser({
   frequency: 15,
   octaves: 5,
@@ -26,19 +26,20 @@ const Flute = new Tone.Player({
 }).connect(lowpass);
 
 
-// let t1on = false;
-// let accelActivate = 2;
-// let accelDeactivate = 0.2;
-// function triggerSampler(accel) {
-//   if (accel >= accelActivate) {
-//     if (t1on) return;
-//     t1on = true;
-//     sampler.triggerAttackRelease([noteDict[Math.floor(Math.random() * 11)]], 2);
-//   }
-//   if (accel < accelDeactivate) {
-//     t1on = false;
-//   }
-// }
+let t1on = false;
+let accelActivate = 2;
+let accelDeactivate = 0.2;
+function triggerSampler(accel) {
+  if (accel >= accelActivate) {
+    if (t1on) return;
+    t1on = true;
+    Flute.volume.value = 0;
+    setTimeout(function(){ Flute.volume.value = -60 }, 2000);
+  }
+  if (accel < accelDeactivate) {
+    t1on = false;
+  }
+}
 
 //listen for updates to Midi2 trigger note
 movement.onchange = function(){
@@ -80,9 +81,9 @@ function handleMotion(event) {
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
   // updateFieldIfNotNull('All', accel);
-  Lyre.volume.value = scaleValue(accel, [0, 3], [-36, 0]);
-  Flute.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
-  //triggerSampler(accel);
+  Lyre.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
+  //Flute.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
+  triggerSampler(accel);
 }
 
 let is_running = false;
