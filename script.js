@@ -6,8 +6,8 @@ document.documentElement.addEventListener("mousedown", () => {
 let currentMovement = 1;
 
 const gainNode = new Tone.Gain(0).toDestination();
-//const filter = new Tone.Filter(1500, "bandpass").connect(gainNode);
-const pitchShift = new Tone.PitchShift(0).connect(gainNode);
+const filter = new Tone.Filter(1500, "bandpass").connect(gainNode);
+const pitchShift = new Tone.PitchShift(0).connect(filter);
 const Lyre = new Tone.Player(
   "https://monlim.github.io/Borderlands/Audio/LyreReson.mp3"
 ).connect(pitchShift);
@@ -39,6 +39,8 @@ function handleOrientation(event) {
   if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 2;
   if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 5;
   if (event.beta >= 100) pitchShift.pitch = 8;
+  filterFreq = scaleValue(event.alpha, [-180, 180], [200, 8000]);
+  filter.frequency.rampTo(filterFreq, 10);
 }
 
 
