@@ -5,7 +5,7 @@ body {
 
 a {
   background-color: none;
-  font-size: 3vw;
+  font-size: 5vw;
   color: white;
   position: fixed;
   top: 50%;
@@ -21,8 +21,8 @@ a {
 
 .circle {
   border-radius: 50%;
-  width: 20vw;
-  height: 20vw;
+  width: 30vw;
+  height: 30vw;
   background: green;
   position: fixed;
   top: 50%;
