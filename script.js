@@ -51,7 +51,7 @@ function handleOrientation(event) {
   if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 5;
   if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 2;
   if (event.beta >= 100) pitchShift.pitch = 0;
-  phaser.frequency.value = scaleValue(event.alpha, [-180, 180], [0, 28]);
+  phaser.frequency.value = scaleValue(event.alpha, [-180, 180], [0, 15]);
   phaser.baseFrequency = scaleValue(event.gamma, [-180, 180], [150, 3500]);
 }
 
