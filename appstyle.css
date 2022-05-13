@@ -41,7 +41,8 @@ a {
 }
 
 .dropdown-content {
-  font-size: 2vw;
+  font-size: 5vw;
+  font-color: black;
   font-family: "Arial", Helvetica, sans-serif;
   text-align: center;
 }
