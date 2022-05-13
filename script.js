@@ -3,8 +3,8 @@ document.documentElement.addEventListener("mousedown", () => {
   if (Tone.context.state !== "running") Tone.context.resume();
 });
 
-let currentMovement = 1;
-console.log("v6");
+let currentMovement = "1";
+console.log("v7");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const phaser = new Tone.Phaser({
@@ -16,6 +16,11 @@ const pitchShift = new Tone.PitchShift(0).connect(phaser);
 const Lyre = new Tone.Player(
   "https://monlim.github.io/Borderlands/Audio/LyreReson.mp3"
 ).connect(pitchShift);
+const Flute = new Tone.Player({
+  url: "https://monlim.github.io/Borderlands/Audio/Flute.mp3",
+  loop: true,
+  playbackRate: 1,
+}).connect(gainNode);
 
 
 // let t1on = false;
@@ -35,24 +40,30 @@ const Lyre = new Tone.Player(
 //listen for updates to Midi2 trigger note
 movement.onchange = function(){
   currentMovement = movement.value;
+  if (currentMovement !== "6") Flute.stop();
+  if (currentMovement !== "1") Lyre.stop();
+  demo_button.innerHTML = "START";
+  document.getElementById("circle").style.background = "green";
+  is_running = false;
 };
 
-function updateFieldIfNotNull(fieldName, value, precision=10){
-  if (value != null)
-    document.getElementById(fieldName).innerHTML = value.toFixed(precision);
-}
+// function updateFieldIfNotNull(fieldName, value, precision=10){
+//   if (value != null)
+//     document.getElementById(fieldName).innerHTML = value.toFixed(precision);
+// }
 
 function handleOrientation(event) {
   //pitchShift.pitch = scaleValue(event.beta, [-180, 180], [0, 12]);
-  updateFieldIfNotNull('Orientation_a', event.alpha);
-  updateFieldIfNotNull('Orientation_b', event.beta);
-  updateFieldIfNotNull('Orientation_g', event.gamma);
+//   updateFieldIfNotNull('Orientation_a', event.alpha);
+//   updateFieldIfNotNull('Orientation_b', event.beta);
+//   updateFieldIfNotNull('Orientation_g', event.gamma);
   if (event.beta < 10) pitchShift.pitch = 8;
   if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 5;
   if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 2;
   if (event.beta >= 100) pitchShift.pitch = 0;
   phaser.frequency.value = scaleValue(event.alpha, [0, 360], [0, 15]);
   phaser.baseFrequency = scaleValue(event.gamma, [-90, 90], [150, 3500]);
+  Flute.playbackRate = scaleValue(event.beta, [-180, 180], [0.2, 2]);
 }
 
 
@@ -64,7 +75,7 @@ function handleMotion(event) {
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
   // updateFieldIfNotNull('All', accel);
-  Lyre.volume.value = scaleValue(accel, [0, 10], [-12, 0]);
+  Lyre.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
   //triggerSampler(accel);
 }
 
@@ -92,6 +103,7 @@ demo_button.onclick = function (e) {
     //Tone.Transport.stop();
     gainNode.gain.rampTo(0, 0.1);
     Lyre.stop();
+    Flute.stop();
     is_running = false;
   } else {
     window.addEventListener("devicemotion", handleMotion);
@@ -99,7 +111,12 @@ demo_button.onclick = function (e) {
     //window.addEventListener("shake", shakeEventDidOccur, false);
     document.getElementById("start_demo").innerHTML = "STOP";
     document.getElementById("circle").style.background = "red";
-    if (currentMovement === 1) Lyre.start();
+    if (currentMovement === "1") {
+      Lyre.start();
+    };
+    if (currentMovement === "6") {
+      Flute.start();
+    };
     //myShakeEvent.start();
     //Tone.Transport.start();
     gainNode.gain.rampTo(1, 0.1);
