@@ -47,10 +47,10 @@ function handleOrientation(event) {
   updateFieldIfNotNull('Orientation_a', event.alpha);
   updateFieldIfNotNull('Orientation_b', event.beta);
   updateFieldIfNotNull('Orientation_g', event.gamma);
-  if (event.beta < 10) pitchShift.pitch = 0;
-  if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 2;
-  if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 5;
-  if (event.beta >= 100) pitchShift.pitch = 8;
+  if (event.beta < 10) pitchShift.pitch = 8;
+  if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 5;
+  if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 2;
+  if (event.beta >= 100) pitchShift.pitch = 0;
   phaser.frequency.value = scaleValue(event.alpha, [-180, 180], [0, 28]);
   phaser.baseFrequency = scaleValue(event.gamma, [-180, 180], [150, 3500]);
 }
@@ -64,7 +64,7 @@ function handleMotion(event) {
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
   // updateFieldIfNotNull('All', accel);
-  Lyre.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
+  Lyre.volume.value = scaleValue(accel, [0, 10], [-12, 0]);
   //triggerSampler(accel);
 }
 
@@ -90,8 +90,8 @@ demo_button.onclick = function (e) {
     document.getElementById("circle").style.background = "green";
     //myShakeEvent.stop();
     //Tone.Transport.stop();
-    if (currentMovement === 1) Lyre.stop();
     gainNode.gain.rampTo(0, 0.1);
+    Lyre.stop();
     is_running = false;
   } else {
     window.addEventListener("devicemotion", handleMotion);
