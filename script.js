@@ -80,6 +80,7 @@ function handleMotion(event) {
     event.acceleration.z ** 2;
   // updateFieldIfNotNull('All', accel);
   Lyre.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
+  Flute.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
   //triggerSampler(accel);
 }
 
