@@ -4,6 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = 1;
+console.log("2");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const filter = new Tone.Filter(1500, "bandpass").connect(gainNode);
