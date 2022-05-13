@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v11");
+console.log("v12");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const lowpass = new Tone.Filter(18000, "lowpass").toDestination();
@@ -80,7 +80,7 @@ function handleMotion(event) {
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
   // updateFieldIfNotNull('All', accel);
-  Lyre.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
+  Lyre.volume.value = scaleValue(accel, [0, 3], [-36, 0]);
   Flute.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
   //triggerSampler(accel);
 }
