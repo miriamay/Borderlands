@@ -40,6 +40,9 @@ movement.onchange = function(){
 
 function handleOrientation(event) {
   //pitchShift.pitch = scaleValue(event.beta, [-180, 180], [0, 12]);
+  updateFieldIfNotNull('Orientation_a', event.alpha);
+  updateFieldIfNotNull('Orientation_b', event.beta);
+  updateFieldIfNotNull('Orientation_g', event.gamma);
   if (event.beta < 10) pitchShift.pitch = 0;
   if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 2;
   if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 5;
