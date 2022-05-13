@@ -4,9 +4,10 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v13");
+console.log("v14");
 
 const gainNode = new Tone.Gain(0).toDestination();
+const gainNode2 = new Tone.Gain(0).connect(gainNode);
 const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
 const phaser = new Tone.Phaser({
   frequency: 15,
@@ -23,7 +24,7 @@ const Flute = new Tone.Player({
   playbackRate: 1,
   loopStart: 0,
   loopEnd: 1
-}).connect(lowpass);
+}).connect(gainNode2);
 
 
 let t1on = false;
@@ -33,8 +34,10 @@ function triggerSampler(accel) {
   if (accel >= accelActivate) {
     if (t1on) return;
     t1on = true;
-    Flute.volume.value = 0;
-    setTimeout(function(){ Flute.volume.value = -60 }, 2000);
+    gainNode2.gain.rampTo(1, 0.1);
+    setTimeout(function(){ 
+      gainNode2.gain.rampTo(0, 0.5);
+    }, 1000);
   }
   if (accel < accelDeactivate) {
     t1on = false;
