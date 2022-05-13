@@ -34,13 +34,11 @@ movement.onchange = function(){
 
 
 function handleOrientation(event) {
-  pitchShift.pitch = scaleValue(event.beta, [-180, 180], [0, 12]);
-//   if (event.beta < 10) pitchShift.pitch = 0;
-//   if (10 <= event.beta && event.beta < 30) pitchShift.pitch = 4;
-//   if (30 <= event.beta && event.beta < 60) pitchShift.pitch = 7;
-//   if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 12;
-//   if (event.beta >= 100) pitchShift.pitch = 16;
-
+  //pitchShift.pitch = scaleValue(event.beta, [-180, 180], [0, 12]);
+  if (event.beta < 10) pitchShift.pitch = 0;
+  if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 2;
+  if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 5;
+  if (event.beta >= 100) pitchShift.pitch = 8;
 }
 
 
