@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = 1;
-console.log("v5");
+console.log("v6");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const phaser = new Tone.Phaser({
@@ -51,8 +51,8 @@ function handleOrientation(event) {
   if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 5;
   if (60 <= event.beta && event.beta < 100) pitchShift.pitch = 2;
   if (event.beta >= 100) pitchShift.pitch = 0;
-  phaser.frequency.value = scaleValue(event.alpha, [-180, 180], [0, 15]);
-  phaser.baseFrequency = scaleValue(event.gamma, [-180, 180], [150, 3500]);
+  phaser.frequency.value = scaleValue(event.alpha, [0, 360], [0, 15]);
+  phaser.baseFrequency = scaleValue(event.gamma, [-90, 90], [150, 3500]);
 }
 
 
