@@ -4,19 +4,19 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v26");
+console.log("v27");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
 const reverb = new Tone.Reverb(3).connect(gainNode);
 reverb.wet.value = 0.4;
 //const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
-const pitchShift = new Tone.PitchShift(0).connect(reverb);
 const phaser = new Tone.Phaser({
   frequency: 15,
   octaves: 5,
   baseFrequency: 1000,
-}).connect(pitchShift);
+}).connect(reverb);
+const pitchShift = new Tone.PitchShift(0).connect(phaser);
 const pluckedEnv = new Tone.AmplitudeEnvelope({
   attack: 0.05,
   decay: 0.1,
@@ -133,8 +133,6 @@ function handleOrientation(event) {
     //reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
   }
   if (currentMovement === "4") {
-    pitchShift.pitch = scaleValue(event.beta, [-50, 150], [-12, 0]);
-  }
   //lowpass.frequency = scaleValue(event.beta, [-32, 140], [2000, 10000]);
   //Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-36, 0]);
   //Owl.volume.value = clamp(-16 - Sooty.volume.value, -36, 0);
@@ -145,6 +143,7 @@ function handleOrientation(event) {
     [0, 90],
     [100, 1000]
   );
+  }
   if (currentMovement === "5") {
     Flute.playbackRate = scaleValue(event.beta, [-50, 150], [0.25, 2.5]);
     Flute.loopStart = scaleValue(Math.abs(event.gamma), [0, 90], [0, 140]);
