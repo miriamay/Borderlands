@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v28");
+console.log("v29");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -133,7 +133,7 @@ function handleOrientation(event) {
     //reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
   }
   if (currentMovement === "4") {
-    lowpass.frequency = scaleValue(event.beta, [-32, 140], [200, 1500]);
+    lowpass.frequency.value = scaleValue(event.beta, [-32, 140], [200, 1500]);
     //Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-36, 0]);
     //Owl.volume.value = clamp(-16 - Sooty.volume.value, -36, 0);
     //}
