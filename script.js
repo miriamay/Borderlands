@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v20");
+console.log("v21");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -107,7 +107,6 @@ movement.onchange = function () {
   if (currentMovement === "1") {
     reverb.wet.value = 0.5;
     reverb.decay = 3;
-    console.log(reverb.decay);
   }
   demo_button.innerHTML = "START";
   document.getElementById("circle").style.background = "green";
@@ -121,16 +120,21 @@ function handleOrientation(event) {
     if (60 <= event.beta && event.beta < 100) pitchShift.pitch = -2;
     if (event.beta >= 100) pitchShift.pitch = -9;
   }
+  if (currentMovement === "3") {
+    reverb.wet.value = scaleValue(event.alpha, [0, 360], [0, 1]);
+    reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
+  }
+  if (currentMovement === "4") {
+    lowpass.frequency = scaleValue(event.beta, [-180, 180], [2000, 10000]);
+    Sooty.volume.value = scaleValue(event.alpha, [0, 360], [-16, 0]);
+    Owl.volume.value = scaleValue(event.gamma, [-90, 90], [-20, 0]);
+  }
   //phaser.frequency.value = scaleValue(event.alpha, [0, 360], [0, 15]);
   //phaser.baseFrequency = scaleValue(event.gamma, [-90, 90], [150, 3500]);
   if (currentMovement === "5") {
     Flute.playbackRate = scaleValue(event.beta, [-180, 180], [0.25, 2.5]);
     Flute.loopStart = scaleValue(event.alpha, [0, 360], [0, 140]);
     Flute.loopEnd = Flute.loopStart + 1;
-  }
-  if (currentMovement === "3") {
-    reverb.wet.value = scaleValue(event.alpha, [0, 360], [0, 1]);
-    reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
   }
 }
 
