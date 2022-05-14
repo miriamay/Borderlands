@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v18");
+console.log("v19");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -45,23 +45,32 @@ const Frog3 = new Tone.Player(
 const Frog4 = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/Frog4.mp3"
 ).toDestination();
+const Witches = new Tone.Player(
+  "https://miriamay.github.io/Borderlands/Audio/Witches.mp3"
+).connect(reverb);
 
 let t1on = false;
 let accelActivate = 2;
 let accelDeactivate = 0.2;
-function triggerSampler(accel) {
+function trigger1(accel) {
   if (accel >= accelActivate) {
     if (t1on) return;
     t1on = true;
-    if (currentMovement === "5") {
-      gainNode2.gain.rampTo(1, 0.1);
-      setTimeout(function () {
-        gainNode2.gain.rampTo(0, 0.5);
-      }, 1000);
-    }
-    if (currentMovement === "1") {
-      pluckedEnv.triggerAttackRelease(0.4);
-    }
+    pluckedEnv.triggerAttackRelease(0.4);
+  }
+  if (accel < accelDeactivate) {
+    t1on = false;
+  }
+}
+
+function trigger5(accel) {
+  if (accel >= accelActivate) {
+    if (t1on) return;
+    t1on = true;
+    gainNode2.gain.rampTo(1, 0.1);
+    setTimeout(function () {
+      gainNode2.gain.rampTo(0, 0.5);
+    }, 1000);
   }
   if (accel < accelDeactivate) {
     t1on = false;
@@ -80,22 +89,36 @@ movement.onchange = function () {
   currentMovement = movement.value;
   if (currentMovement !== "5") Flute.stop();
   if (currentMovement !== "1") Lyre.stop();
+  if (currentMovement !== "3") Witches.stop();
   if (currentMovement !== "2") myShakeEvent.stop();
+  if (currentMovement === "1") {
+    reverb.wet.value = 0.5;
+    reverb.decay = 3;
+    console.log(reverb.decay);
+  }
   demo_button.innerHTML = "START";
   document.getElementById("circle").style.background = "green";
   is_running = false;
 };
 
 function handleOrientation(event) {
-  if (event.beta < 10) pitchShift.pitch = 5;
-  if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 0;
-  if (60 <= event.beta && event.beta < 100) pitchShift.pitch = -2;
-  if (event.beta >= 100) pitchShift.pitch = -9;
+  if (currentMovement === "1") {
+    if (event.beta < 10) pitchShift.pitch = 5;
+    if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 0;
+    if (60 <= event.beta && event.beta < 100) pitchShift.pitch = -2;
+    if (event.beta >= 100) pitchShift.pitch = -9;
+  }
   //phaser.frequency.value = scaleValue(event.alpha, [0, 360], [0, 15]);
   //phaser.baseFrequency = scaleValue(event.gamma, [-90, 90], [150, 3500]);
-  Flute.playbackRate = scaleValue(event.beta, [-180, 180], [0.25, 2.5]);
-  Flute.loopStart = scaleValue(event.alpha, [0, 360], [0, 140]);
-  Flute.loopEnd = Flute.loopStart + 1;
+  if (currentMovement === "5") {
+    Flute.playbackRate = scaleValue(event.beta, [-180, 180], [0.25, 2.5]);
+    Flute.loopStart = scaleValue(event.alpha, [0, 360], [0, 140]);
+    Flute.loopEnd = Flute.loopStart + 1;
+  }
+  if (currentMovement === "3") {
+    reverb.wet.value = scaleValue(event.alpha, [0, 360], [0, 1]);
+    reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
+  }
 }
 
 let accel;
@@ -105,7 +128,8 @@ function handleMotion(event) {
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
   //Flute.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
-  triggerSampler(accel);
+  if (currentMovement === "1") trigger1(accel);
+  if (currentMovement === "5") trigger5(accel);
 }
 
 let is_running = false;
@@ -133,6 +157,7 @@ demo_button.onclick = function (e) {
     gainNode.gain.rampTo(0, 0.1);
     Lyre.stop();
     Flute.stop();
+    Witches.stop();
     is_running = false;
   } else {
     window.addEventListener("devicemotion", handleMotion);
@@ -142,6 +167,9 @@ demo_button.onclick = function (e) {
     document.getElementById("circle").style.background = "red";
     if (currentMovement === "1") {
       Lyre.start();
+    }
+    if (currentMovement === "3") {
+      Witches.start();
     }
     if (currentMovement === "5") {
       Flute.start();
@@ -170,7 +198,7 @@ function scaleValue(value, from, to) {
 //   .clamp(true);
 
 var myShakeEvent = new Shake({
-  threshold: 10, // optional shake strength threshold
+  threshold: 8, // optional shake strength threshold
   timeout: 1000, // optional, determines the frequency of event generation
 });
 
