@@ -4,11 +4,11 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v19");
+console.log("v20");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
-//const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
+const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
 // const phaser = new Tone.Phaser({
 //   frequency: 15,
 //   octaves: 5,
@@ -48,10 +48,18 @@ const Frog4 = new Tone.Player(
 const Witches = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/Witches.mp3"
 ).connect(reverb);
+const Owl = new Tone.Player(
+  "https://miriamay.github.io/Borderlands/Audio/Owl.mp3"
+).connect(gainNode);
+const Sooty = new Tone.Player({
+  url: "https://miriamay.github.io/Borderlands/Audio/Sooty.mp3",
+  loop: true,
+}).connect(lowpass);
 
 let t1on = false;
 let accelActivate = 2;
 let accelDeactivate = 0.2;
+//trigger Lyre
 function trigger1(accel) {
   if (accel >= accelActivate) {
     if (t1on) return;
@@ -63,6 +71,7 @@ function trigger1(accel) {
   }
 }
 
+//trigger Flute Mimicry
 function trigger5(accel) {
   if (accel >= accelActivate) {
     if (t1on) return;
@@ -87,10 +96,14 @@ const frogDict = {
 //listen for updates to Midi2 trigger note
 movement.onchange = function () {
   currentMovement = movement.value;
-  if (currentMovement !== "5") Flute.stop();
   if (currentMovement !== "1") Lyre.stop();
-  if (currentMovement !== "3") Witches.stop();
   if (currentMovement !== "2") myShakeEvent.stop();
+  if (currentMovement !== "3") Witches.stop();
+  if (currentMovement !== "4") {
+    Owl.stop();
+    Sooty.stop();
+  }
+  if (currentMovement !== "5") Flute.stop();
   if (currentMovement === "1") {
     reverb.wet.value = 0.5;
     reverb.decay = 3;
@@ -153,11 +166,12 @@ demo_button.onclick = function (e) {
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
     myShakeEvent.stop();
-    //Tone.Transport.stop();
     gainNode.gain.rampTo(0, 0.1);
     Lyre.stop();
     Flute.stop();
     Witches.stop();
+    Owl.stop();
+    Sooty.stop();
     is_running = false;
   } else {
     window.addEventListener("devicemotion", handleMotion);
@@ -168,16 +182,19 @@ demo_button.onclick = function (e) {
     if (currentMovement === "1") {
       Lyre.start();
     }
+    if (currentMovement === "2") {
+      myShakeEvent.start();
+    }
     if (currentMovement === "3") {
       Witches.start();
+    }
+    if (currentMovement === "4") {
+      Owl.start();
+      Sooty.start();
     }
     if (currentMovement === "5") {
       Flute.start();
     }
-    if (currentMovement === "2") {
-      myShakeEvent.start();
-    }
-    //Tone.Transport.start();
     gainNode.gain.rampTo(1, 0.1);
     is_running = true;
   }
