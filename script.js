@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v16");
+console.log("v17");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -14,12 +14,14 @@ const gainNode2 = new Tone.Gain(0).connect(gainNode);
 //   octaves: 5,
 //   baseFrequency: 1000,
 // }).connect(gainNode);
+const reverb = new Tone.Reverb(3).connect(gainNode);
+reverb.wet.value = 0.5;
 const pitchShift = new Tone.PitchShift(0).connect(gainNode);
 const pluckedEnv = new Tone.AmplitudeEnvelope({
   attack: 0.05,
   decay: 0.1,
   sustain: 0.15,
-  release: 1.2,
+  release: 0.1,
 }).connect(pitchShift);
 const Lyre = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/LyreReson4.mp3"
@@ -58,7 +60,7 @@ function triggerSampler(accel) {
       }, 1000);
     }
     if (currentMovement === "1") {
-      pluckedEnv.triggerAttackRelease(0.3);
+      pluckedEnv.triggerAttackRelease(0.4);
     }
   }
   if (accel < accelDeactivate) {
