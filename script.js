@@ -4,18 +4,18 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v23");
+console.log("v24");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
-const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
+//const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
 // const phaser = new Tone.Phaser({
 //   frequency: 15,
 //   octaves: 5,
 //   baseFrequency: 1000,
 // }).connect(gainNode);
-const reverb = new Tone.Reverb(5).connect(gainNode);
-reverb.wet.value = 0.5;
+const reverb = new Tone.Reverb(3).connect(gainNode);
+reverb.wet.value = 0.4;
 const pitchShift = new Tone.PitchShift(0).connect(reverb);
 const pluckedEnv = new Tone.AmplitudeEnvelope({
   attack: 0.05,
@@ -55,7 +55,7 @@ const Owl = new Tone.Player(
 const Sooty = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Sooty.mp3",
   loop: true,
-}).connect(lowpass);
+}).connect(pitchShift);
 
 let t1on = false;
 let accelActivate = 2;
@@ -99,15 +99,22 @@ movement.onchange = function () {
   currentMovement = movement.value;
   if (currentMovement !== "1") {
     Lyre.stop();
-    pitchShift.pitch = 0;
   } else {
     (reverb.wet.value = 0.5), (reverb.decay = 3);
   }
+  if (currentMovement !== "1" && currentMovement !== "4") pitchShift.pitch = 0;
   if (currentMovement !== "2") myShakeEvent.stop();
-  if (currentMovement !== "3") Witches.stop();
+  if (currentMovement !== "3") {
+    Witches.stop();
+  } else {
+    reverb.decay = 20;
+    console.log(reverb.decay);
+  }
   if (currentMovement !== "4") {
     Owl.stop();
     Sooty.stop();
+  } else {
+    reverb.wet.value = 0;
   }
   if (currentMovement !== "5") Flute.stop();
   demo_button.innerHTML = "START";
@@ -127,10 +134,12 @@ function handleOrientation(event) {
     //reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
   }
   if (currentMovement === "4") {
-    lowpass.frequency = scaleValue(event.beta, [-32, 140], [2000, 10000]);
-    Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-20, 0]);
-    Owl.volume.value = clamp(-16 - Sooty.volume.value, -20, 0);
-  }
+    pitchShift.pitch = scaleValue(event.beta, [-50, 150], [-12, 0])
+  };
+  //lowpass.frequency = scaleValue(event.beta, [-32, 140], [2000, 10000]);
+  //Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-36, 0]);
+  //Owl.volume.value = clamp(-16 - Sooty.volume.value, -36, 0);
+  //}
   //phaser.frequency.value = scaleValue(event.alpha, [0, 360], [0, 15]);
   //phaser.baseFrequency = scaleValue(event.gamma, [-90, 90], [150, 3500]);
   if (currentMovement === "5") {
@@ -146,7 +155,7 @@ function handleMotion(event) {
     event.acceleration.x ** 2 +
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
-  //Flute.volume.value = scaleValue(accel, [0, 10], [-16, 0]);
+  Sooty.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
   if (currentMovement === "1") trigger1(accel);
   if (currentMovement === "5") trigger5(accel);
 }
