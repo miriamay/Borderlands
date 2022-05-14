@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v22");
+console.log("v23");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -22,6 +22,7 @@ const pluckedEnv = new Tone.AmplitudeEnvelope({
   decay: 0.1,
   sustain: 0.15,
   release: 0.1,
+  decayCurve: "exponential",
 }).connect(pitchShift);
 const Lyre = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/LyreReson4.mp3"
