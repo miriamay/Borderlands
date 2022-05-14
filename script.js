@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v17");
+console.log("v18");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -16,7 +16,7 @@ const gainNode2 = new Tone.Gain(0).connect(gainNode);
 // }).connect(gainNode);
 const reverb = new Tone.Reverb(3).connect(gainNode);
 reverb.wet.value = 0.5;
-const pitchShift = new Tone.PitchShift(0).connect(gainNode);
+const pitchShift = new Tone.PitchShift(0).connect(reverb);
 const pluckedEnv = new Tone.AmplitudeEnvelope({
   attack: 0.05,
   decay: 0.1,
@@ -68,11 +68,19 @@ function triggerSampler(accel) {
   }
 }
 
+const frogDict = {
+  1: Frog1,
+  2: Frog2,
+  3: Frog3,
+  4: Frog4,
+};
+
 //listen for updates to Midi2 trigger note
 movement.onchange = function () {
   currentMovement = movement.value;
   if (currentMovement !== "5") Flute.stop();
   if (currentMovement !== "1") Lyre.stop();
+  if (currentMovement !== "2") myShakeEvent.stop();
   demo_button.innerHTML = "START";
   document.getElementById("circle").style.background = "green";
   is_running = false;
@@ -117,10 +125,10 @@ demo_button.onclick = function (e) {
   if (is_running) {
     window.removeEventListener("devicemotion", handleMotion);
     window.removeEventListener("deviceorientation", handleOrientation);
-    //window.removeEventListener("shake", shakeEventDidOccur, false);
+    window.removeEventListener("shake", shakeEventDidOccur, false);
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
-    //myShakeEvent.stop();
+    myShakeEvent.stop();
     //Tone.Transport.stop();
     gainNode.gain.rampTo(0, 0.1);
     Lyre.stop();
@@ -129,7 +137,7 @@ demo_button.onclick = function (e) {
   } else {
     window.addEventListener("devicemotion", handleMotion);
     window.addEventListener("deviceorientation", handleOrientation);
-    //window.addEventListener("shake", shakeEventDidOccur, false);
+    window.addEventListener("shake", shakeEventDidOccur, false);
     document.getElementById("start_demo").innerHTML = "STOP";
     document.getElementById("circle").style.background = "red";
     if (currentMovement === "1") {
@@ -138,7 +146,9 @@ demo_button.onclick = function (e) {
     if (currentMovement === "5") {
       Flute.start();
     }
-    //myShakeEvent.start();
+    if (currentMovement === "2") {
+      myShakeEvent.start();
+    }
     //Tone.Transport.start();
     gainNode.gain.rampTo(1, 0.1);
     is_running = true;
@@ -159,13 +169,13 @@ function scaleValue(value, from, to) {
 //   .range([0, 1])
 //   .clamp(true);
 
-// var myShakeEvent = new Shake({
-//   threshold: 10, // optional shake strength threshold
-//   timeout: 1000, // optional, determines the frequency of event generation
-// });
+var myShakeEvent = new Shake({
+  threshold: 10, // optional shake strength threshold
+  timeout: 1000, // optional, determines the frequency of event generation
+});
 
-// //function to call when shake occurs
-// function shakeEventDidOccur() {
-//   shakeDict[Math.floor(Math.random() * 27)].start();
-//   //alert('shake!');
-// }
+//function to call when shake occurs
+function shakeEventDidOccur() {
+  frogDict[Math.floor(Math.random() * 5)].start();
+  //alert('shake!');
+}
