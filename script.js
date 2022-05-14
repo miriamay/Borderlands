@@ -4,16 +4,16 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v24");
+console.log("v25");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
 //const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
-// const phaser = new Tone.Phaser({
-//   frequency: 15,
-//   octaves: 5,
-//   baseFrequency: 1000,
-// }).connect(gainNode);
+const phaser = new Tone.Phaser({
+  frequency: 15,
+  octaves: 5,
+  baseFrequency: 1000,
+}).connect(gainNode);
 const reverb = new Tone.Reverb(3).connect(gainNode);
 reverb.wet.value = 0.4;
 const pitchShift = new Tone.PitchShift(0).connect(reverb);
@@ -50,12 +50,12 @@ const Witches = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/Witches.mp3"
 ).connect(reverb);
 const Owl = new Tone.Player(
-  "https://miriamay.github.io/Borderlands/Audio/Owl.mp3"
-).connect(gainNode);
-const Sooty = new Tone.Player({
-  url: "https://miriamay.github.io/Borderlands/Audio/Sooty.mp3",
-  loop: true,
-}).connect(pitchShift);
+  "https://miriamay.github.io/Borderlands/Audio/Owl2.mp3"
+).connect(phaser);
+// const Sooty = new Tone.Player({
+//   url: "https://miriamay.github.io/Borderlands/Audio/Sooty.mp3",
+//   loop: true,
+// }).connect(pitchShift);
 
 let t1on = false;
 let accelActivate = 2;
@@ -108,11 +108,10 @@ movement.onchange = function () {
     Witches.stop();
   } else {
     reverb.decay = 20;
-    console.log(reverb.decay);
   }
   if (currentMovement !== "4") {
     Owl.stop();
-    Sooty.stop();
+    //Sooty.stop();
   } else {
     reverb.wet.value = 0;
   }
@@ -134,14 +133,18 @@ function handleOrientation(event) {
     //reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
   }
   if (currentMovement === "4") {
-    pitchShift.pitch = scaleValue(event.beta, [-50, 150], [-12, 0])
-  };
+    pitchShift.pitch = scaleValue(event.beta, [-50, 150], [-12, 0]);
+  }
   //lowpass.frequency = scaleValue(event.beta, [-32, 140], [2000, 10000]);
   //Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-36, 0]);
   //Owl.volume.value = clamp(-16 - Sooty.volume.value, -36, 0);
   //}
-  //phaser.frequency.value = scaleValue(event.alpha, [0, 360], [0, 15]);
-  //phaser.baseFrequency = scaleValue(event.gamma, [-90, 90], [150, 3500]);
+  phaser.frequency.value = scaleValue(event.beta, [-50, 150], [0, 15]);
+  phaser.baseFrequency = scaleValue(
+    Math.abs(event.gamma),
+    [0, 90],
+    [100, 2000]
+  );
   if (currentMovement === "5") {
     Flute.playbackRate = scaleValue(event.beta, [-50, 150], [0.25, 2.5]);
     Flute.loopStart = scaleValue(Math.abs(event.gamma), [0, 90], [0, 140]);
@@ -155,7 +158,7 @@ function handleMotion(event) {
     event.acceleration.x ** 2 +
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
-  Sooty.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
+  //Sooty.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
   if (currentMovement === "1") trigger1(accel);
   if (currentMovement === "5") trigger5(accel);
 }
@@ -186,7 +189,7 @@ demo_button.onclick = function (e) {
     Flute.stop();
     Witches.stop();
     Owl.stop();
-    Sooty.stop();
+    //Sooty.stop();
     is_running = false;
   } else {
     window.addEventListener("devicemotion", handleMotion);
@@ -205,7 +208,7 @@ demo_button.onclick = function (e) {
     }
     if (currentMovement === "4") {
       Owl.start();
-      Sooty.start();
+      //Sooty.start();
     }
     if (currentMovement === "5") {
       Flute.start();
