@@ -14,7 +14,7 @@ const lowpass = new Tone.Filter(18000, "lowpass").connect(gainNode);
 //   octaves: 5,
 //   baseFrequency: 1000,
 // }).connect(gainNode);
-const reverb = new Tone.Reverb(3).connect(gainNode);
+const reverb = new Tone.Reverb(5).connect(gainNode);
 reverb.wet.value = 0.5;
 const pitchShift = new Tone.PitchShift(0).connect(reverb);
 const pluckedEnv = new Tone.AmplitudeEnvelope({
@@ -100,9 +100,8 @@ movement.onchange = function () {
     Lyre.stop();
     pitchShift.pitch = 0;
   } else {
-    reverb.wet.value = 0.5,
-    reverb.decay = 3;
-  };
+    (reverb.wet.value = 0.5), (reverb.decay = 3);
+  }
   if (currentMovement !== "2") myShakeEvent.stop();
   if (currentMovement !== "3") Witches.stop();
   if (currentMovement !== "4") {
@@ -121,23 +120,23 @@ function handleOrientation(event) {
     if (10 <= event.beta && event.beta < 60) pitchShift.pitch = 0;
     if (60 <= event.beta && event.beta < 100) pitchShift.pitch = -2;
     if (event.beta >= 100) pitchShift.pitch = -9;
-  };
+  }
   if (currentMovement === "3") {
-    reverb.wet.value = scaleValue(event.alpha, [0, 360], [0, 1]);
-    reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
-  };
+    reverb.wet.value = scaleValue(Math.abs(event.gamma), [0, 90], [1, 0]);
+    //reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
+  }
   if (currentMovement === "4") {
-    lowpass.frequency = scaleValue(event.beta, [-180, 180], [2000, 10000]);
-    Sooty.volume.value = scaleValue(event.alpha, [0, 360], [-16, 0]);
-    Owl.volume.value = scaleValue(event.gamma, [-90, 90], [-20, 0]);
-  };
+    lowpass.frequency = scaleValue(event.beta, [-32, 140], [2000, 10000]);
+    Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-20, 0]);
+    Owl.volume.value = clamp(-16 - Sooty.volume.value, -20, 0);
+  }
   //phaser.frequency.value = scaleValue(event.alpha, [0, 360], [0, 15]);
   //phaser.baseFrequency = scaleValue(event.gamma, [-90, 90], [150, 3500]);
   if (currentMovement === "5") {
-    Flute.playbackRate = scaleValue(event.beta, [-180, 180], [0.25, 2.5]);
-    Flute.loopStart = scaleValue(event.alpha, [0, 360], [0, 140]);
+    Flute.playbackRate = scaleValue(event.beta, [-50, 150], [0.25, 2.5]);
+    Flute.loopStart = scaleValue(Math.abs(event.gamma), [0, 90], [0, 140]);
     Flute.loopEnd = Flute.loopStart + 1;
-  };
+  }
 }
 
 let accel;
@@ -211,6 +210,8 @@ function scaleValue(value, from, to) {
   let capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
   return capped * scale + to[0];
 }
+
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 // //exponential scale
 // let powerScale = d3
