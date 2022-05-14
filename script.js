@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v15");
+console.log("v16");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -16,10 +16,10 @@ const gainNode2 = new Tone.Gain(0).connect(gainNode);
 // }).connect(gainNode);
 const pitchShift = new Tone.PitchShift(0).connect(gainNode);
 const pluckedEnv = new Tone.AmplitudeEnvelope({
-  attack: 0.1,
-  decay: 0.2,
-  sustain: 1.0,
-  release: 0.8,
+  attack: 0.05,
+  decay: 0.1,
+  sustain: 0.15,
+  release: 1.2,
 }).connect(pitchShift);
 const Lyre = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/LyreReson4.mp3"
@@ -31,6 +31,18 @@ const Flute = new Tone.Player({
   loopStart: 0,
   loopEnd: 1,
 }).connect(gainNode2);
+const Frog1 = new Tone.Player(
+  "https://miriamay.github.io/Borderlands/Audio/Frog1.mp3"
+).toDestination();
+const Frog2 = new Tone.Player(
+  "https://miriamay.github.io/Borderlands/Audio/Frog2.mp3"
+).toDestination();
+const Frog3 = new Tone.Player(
+  "https://miriamay.github.io/Borderlands/Audio/Frog3.mp3"
+).toDestination();
+const Frog4 = new Tone.Player(
+  "https://miriamay.github.io/Borderlands/Audio/Frog4.mp3"
+).toDestination();
 
 let t1on = false;
 let accelActivate = 2;
@@ -46,7 +58,7 @@ function triggerSampler(accel) {
       }, 1000);
     }
     if (currentMovement === "1") {
-      pluckedEnv.triggerAttackRelease(1);
+      pluckedEnv.triggerAttackRelease(0.3);
     }
   }
   if (accel < accelDeactivate) {
