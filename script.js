@@ -22,10 +22,10 @@ const pluckedEnv = new Tone.AmplitudeEnvelope({
   release: 0.8,
 }).connect(pitchShift);
 const Lyre = new Tone.Player(
-  "https://monlim.github.io/Borderlands/Audio/LyreReson4.mp3"
+  "https://miriamay.github.io/Borderlands/Audio/LyreReson4.mp3"
 ).connect(pluckedEnv);
 const Flute = new Tone.Player({
-  url: "https://monlim.github.io/Borderlands/Audio/Flute.mp3",
+  url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
   loop: true,
   playbackRate: 1,
   loopStart: 0,
