@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v29");
+console.log("v30");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -15,7 +15,11 @@ const phaser = new Tone.Phaser({
   octaves: 5,
   baseFrequency: 1000,
 }).connect(reverb);
-const lowpass = new Tone.Filter(18000, "lowpass").connect(phaser);
+const lowpass = new Tone.Filter({
+  Q: 10,
+  frequency: 18000, 
+  type: "lowpass",
+}).connect(phaser);
 const pitchShift = new Tone.PitchShift(0).connect(phaser);
 const pluckedEnv = new Tone.AmplitudeEnvelope({
   attack: 0.05,
