@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v30");
+console.log("v31");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -17,20 +17,20 @@ const phaser = new Tone.Phaser({
 }).connect(reverb);
 const lowpass = new Tone.Filter({
   Q: 10,
-  frequency: 18000, 
+  frequency: 18000,
   type: "lowpass",
 }).connect(phaser);
 const pitchShift = new Tone.PitchShift(0).connect(phaser);
-const pluckedEnv = new Tone.AmplitudeEnvelope({
-  attack: 0.05,
-  decay: 0.1,
-  sustain: 0.15,
-  release: 0.1,
-  decayCurve: "exponential",
-}).connect(pitchShift);
+// const pluckedEnv = new Tone.AmplitudeEnvelope({
+//   attack: 0.05,
+//   decay: 0.1,
+//   sustain: 0.15,
+//   release: 0.1,
+//   decayCurve: "exponential",
+// }).connect(pitchShift);
 const Lyre = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/LyreReson4.mp3"
-).connect(pluckedEnv);
+).connect(pitchShift);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
   loop: true,
@@ -61,15 +61,24 @@ const Owl = new Tone.Player(
 //   loop: true,
 // }).connect(pitchShift);
 
+function scaleValue(value, from, to) {
+  let scale = (to[1] - to[0]) / (from[1] - from[0]);
+  let capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
+  return capped * scale + to[0];
+}
+
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
 let t1on = false;
 let accelActivate = 2;
 let accelDeactivate = 0.2;
-//trigger Lyre
-function trigger1(accel) {
+
+//trigger Frog
+function trigger2(accel) {
   if (accel >= accelActivate) {
     if (t1on) return;
     t1on = true;
-    pluckedEnv.triggerAttackRelease(0.4);
+    frogDict[Math.floor(Math.random() * 5)].start();
   }
   if (accel < accelDeactivate) {
     t1on = false;
@@ -111,7 +120,7 @@ movement.onchange = function () {
   if (currentMovement !== "3") {
     Witches.stop();
   } else {
-    reverb.decay = 20;
+    reverb.decay = 5;
   }
   if (currentMovement !== "4") {
     Owl.stop();
@@ -133,8 +142,7 @@ function handleOrientation(event) {
     if (event.beta >= 100) pitchShift.pitch = -9;
   }
   if (currentMovement === "3") {
-    reverb.wet.value = scaleValue(Math.abs(event.gamma), [0, 90], [1, 0]);
-    //reverb.decay = scaleValue(event.beta, [-90, 90], [2, 10]);
+    reverb.wet.value = scaleValue(event.beta, [-50, 150], [0, 1]);
   }
   if (currentMovement === "4") {
     lowpass.frequency.value = scaleValue(event.beta, [-32, 140], [200, 1500]);
@@ -162,7 +170,7 @@ function handleMotion(event) {
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
   //Sooty.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
-  if (currentMovement === "1") trigger1(accel);
+  if (currentMovement === "2") trigger2(accel);
   if (currentMovement === "5") trigger5(accel);
 }
 
@@ -183,10 +191,8 @@ demo_button.onclick = function (e) {
   if (is_running) {
     window.removeEventListener("devicemotion", handleMotion);
     window.removeEventListener("deviceorientation", handleOrientation);
-    window.removeEventListener("shake", shakeEventDidOccur, false);
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
-    myShakeEvent.stop();
     gainNode.gain.rampTo(0, 0.1);
     Lyre.stop();
     Flute.stop();
@@ -197,14 +203,10 @@ demo_button.onclick = function (e) {
   } else {
     window.addEventListener("devicemotion", handleMotion);
     window.addEventListener("deviceorientation", handleOrientation);
-    window.addEventListener("shake", shakeEventDidOccur, false);
     document.getElementById("start_demo").innerHTML = "STOP";
     document.getElementById("circle").style.background = "red";
     if (currentMovement === "1") {
       Lyre.start();
-    }
-    if (currentMovement === "2") {
-      myShakeEvent.start();
     }
     if (currentMovement === "3") {
       Witches.start();
@@ -220,30 +222,3 @@ demo_button.onclick = function (e) {
     is_running = true;
   }
 };
-
-function scaleValue(value, from, to) {
-  let scale = (to[1] - to[0]) / (from[1] - from[0]);
-  let capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
-  return capped * scale + to[0];
-}
-
-const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-
-// //exponential scale
-// let powerScale = d3
-//   .scalePow()
-//   .exponent(1.4)
-//   .domain([0, 6])
-//   .range([0, 1])
-//   .clamp(true);
-
-var myShakeEvent = new Shake({
-  threshold: 8, // optional shake strength threshold
-  timeout: 1000, // optional, determines the frequency of event generation
-});
-
-//function to call when shake occurs
-function shakeEventDidOccur() {
-  frogDict[Math.floor(Math.random() * 5)].start();
-  //alert('shake!');
-}
