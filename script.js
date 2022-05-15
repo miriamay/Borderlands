@@ -19,7 +19,7 @@ const lowpass = new Tone.Filter({
   Q: 10,
   frequency: 18000,
   type: "lowpass",
-}).connect(phaser);
+}).connect(reverb);
 const pitchShift = new Tone.PitchShift(0).connect(reverb);
 // const pluckedEnv = new Tone.AmplitudeEnvelope({
 //   attack: 0.05,
