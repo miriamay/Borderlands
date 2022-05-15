@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v34");
+console.log("v35");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -66,6 +66,14 @@ function scaleValue(value, from, to) {
   let capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
   return capped * scale + to[0];
 }
+
+//exponential scale
+let powerScale = d3
+  .scalePow()
+  .exponent(2)
+  .domain([-32, 140])
+  .range([200, 8000])
+  .clamp(true);
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
@@ -145,7 +153,7 @@ function handleOrientation(event) {
     reverb.wet.value = scaleValue(event.beta, [-50, 150], [0, 1]);
   }
   if (currentMovement === "4") {
-    lowpass.frequency.value = scaleValue(event.beta, [-32, 140], [200, 1500]);
+    lowpass.frequency.value = powerScale(event.beta);
     //Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-36, 0]);
     //Owl.volume.value = clamp(-16 - Sooty.volume.value, -36, 0);
     //}
