@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v33");
+console.log("v34");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -112,15 +112,15 @@ movement.onchange = function () {
   currentMovement = movement.value;
   if (currentMovement !== "1") {
     Lyre.stop();
+    pitchShift.pitch = 0;
   } else {
-    (reverb.wet.value = 0.5), (reverb.decay = 3);
+    reverb.wet.value = 0.5;
+    reverb.decay = 3;
   }
-  if (currentMovement !== "1" && currentMovement !== "4") pitchShift.pitch = 0;
-  if (currentMovement !== "2") myShakeEvent.stop();
   if (currentMovement !== "3") {
     Witches.stop();
   } else {
-    reverb.decay = 5;
+    reverb.decay = 10;
   }
   if (currentMovement !== "4") {
     Owl.stop();
