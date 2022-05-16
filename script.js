@@ -5,8 +5,25 @@ document.documentElement.addEventListener("mousedown", () => {
 let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
+getScreenLock();
 
-console.log("v47");
+function isScreenLockSupported() {
+  return "wakeLock" in navigator;
+}
+
+async function getScreenLock() {
+  if (isScreenLockSupported()) {
+    let screenLock;
+    try {
+      screenLock = await navigator.wakeLock.request("screen");
+    } catch (err) {
+      console.log(err.name, err.message);
+    }
+    return screenLock;
+  }
+}
+
+console.log("v45");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -148,7 +165,10 @@ function handleOrientation(event) {
   }
   if (currentMovement === "4") {
     //lowpass.frequency.value = powerScale(event.beta);
-    gainNode2.gain.rampTo(scaleValue(Math.abs(event.beta), [0, 180], [0, 1]), 0.1);
+    gainNode2.gain.rampTo(
+      scaleValue(Math.abs(event.beta), [0, 180], [0, 1]),
+      0.1
+    );
     // phaser.frequency.value = scaleValue(event.beta, [-50, 150], [0, 15]);
     // phaser.baseFrequency = scaleValue(
     //   Math.abs(event.gamma),
@@ -207,16 +227,16 @@ demo_button.onclick = function (e) {
     document.getElementById("circle").style.background = "red";
     if (currentMovement === "1" && Lyre.loaded) {
       Lyre.start();
-    };
+    }
     if (currentMovement === "3" && Witches.loaded) {
       Witches.start();
-    };
+    }
     if (currentMovement === "4" && Owl.loaded) {
       Owl.start();
-    };
+    }
     if (currentMovement === "5" && Flute.loaded) {
       Flute.start();
-    };
+    }
     gainNode.gain.rampTo(1, 0.1);
     is_running = true;
   }
@@ -232,5 +252,14 @@ document.addEventListener("visibilitychange", function () {
     Owl.stop();
     is_running = false;
     console.log("hidden");
+  }
+  if (document.visibilityState === "visible") {
+    // Request permission for iOS 13+ devices
+    if (
+      DeviceMotionEvent &&
+      typeof DeviceMotionEvent.requestPermission === "function"
+    ) {
+      DeviceMotionEvent.requestPermission();
+    }
   }
 });
