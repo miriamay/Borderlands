@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v41");
+console.log("v42");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -58,7 +58,7 @@ const Witches = new Tone.Player(
 ).connect(lowpass);
 const Owl = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/OwlNatural.mp3"
-).connect(gainNode);
+).connect(gainNode2);
 
 function scaleValue(value, from, to) {
   let scale = (to[1] - to[0]) / (from[1] - from[0]);
@@ -114,14 +114,14 @@ const frogDict = {
   4: Frog4,
 };
 
-//listen for updates to Midi2 trigger note
+//listen for updates to movement
 movement.onchange = function () {
   currentMovement = movement.value;
   if (currentMovement !== "1") {
     Lyre.stop();
     pitchShift.pitch = 0;
   } else {
-    reverb.wet.value = 0.5;
+    reverb.wet.value = 0.4;
     reverb.decay = 3;
   }
   if (currentMovement !== "3") {
@@ -129,8 +129,6 @@ movement.onchange = function () {
   }
   if (currentMovement !== "4") {
     Owl.stop();
-  } else {
-    reverb.wet.value = 0;
   }
   if (currentMovement !== "5") Flute.stop();
   demo_button.innerHTML = "START";
@@ -150,7 +148,7 @@ function handleOrientation(event) {
   }
   if (currentMovement === "4") {
     //lowpass.frequency.value = powerScale(event.beta);
-    Owl.vol.value = scaleValue(event.beta, [-180, 180], [-36, 0]);
+    gainNode2.gain.rampTo(scaleValue(event.beta, [-50, 150], [0, 1]), 0.1);
     // phaser.frequency.value = scaleValue(event.beta, [-50, 150], [0, 15]);
     // phaser.baseFrequency = scaleValue(
     //   Math.abs(event.gamma),
