@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v43");
+console.log("v44");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -70,7 +70,7 @@ function scaleValue(value, from, to) {
 let powerScale = d3
   .scalePow()
   .exponent(2)
-  .domain([-30, 150])
+  .domain([0, 180])
   .range([200, 8000])
   .clamp(true);
 
@@ -97,7 +97,7 @@ function trigger5(accel) {
   if (accel >= accelActivate) {
     if (t1on) return;
     t1on = true;
-    gainNode2.gain.rampTo(1, 0.1);
+    gainNode2.gain.rampTo(0.8, 0.1);
     setTimeout(function () {
       gainNode2.gain.rampTo(0, 0.5);
     }, 1000);
@@ -144,7 +144,7 @@ function handleOrientation(event) {
     if (event.beta >= 100) pitchShift.pitch = -9;
   }
   if (currentMovement === "3") {
-    lowpass.frequency.value = powerScale(event.beta);
+    lowpass.frequency.value = powerScale(Math.abs(event.beta));
   }
   if (currentMovement === "4") {
     //lowpass.frequency.value = powerScale(event.beta);
