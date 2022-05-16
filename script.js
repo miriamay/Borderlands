@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v52");
+console.log("v54");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -32,7 +32,7 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 // }).connect(pitchShift);
 const Lyre = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
-  onload: ready(),
+  //onload: ready(),
 }).connect(pitchShift);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
@@ -176,10 +176,10 @@ function handleMotion(event) {
   if (currentMovement === "5") trigger5(accel);
 }
 
-function ready() {
-  demo_button.innerHTML = "START";
-  document.getElementById("circle").style.background = "green";
-}
+// function ready() {
+//   demo_button.innerHTML = "START";
+//   document.getElementById("circle").style.background = "green";
+// }
 
 demo_button.onclick = function (e) {
   e.preventDefault();
