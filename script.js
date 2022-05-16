@@ -4,7 +4,7 @@ document.documentElement.addEventListener("mousedown", () => {
 });
 
 let currentMovement = "1";
-console.log("v35");
+console.log("v36");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -29,7 +29,7 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 //   decayCurve: "exponential",
 // }).connect(pitchShift);
 const Lyre = new Tone.Player(
-  "https://miriamay.github.io/Borderlands/Audio/Lyre.mp3"
+  "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3"
 ).connect(pitchShift);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
