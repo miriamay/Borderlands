@@ -5,7 +5,11 @@ document.documentElement.addEventListener("mousedown", () => {
 let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
-getScreenLock();
+
+let screenLock;
+navigator.wakeLock.request("screen").then((lock) => {
+  screenLock = lock;
+});
 
 function isScreenLockSupported() {
   return "wakeLock" in navigator;
@@ -23,7 +27,7 @@ async function getScreenLock() {
   }
 }
 
-console.log("v45");
+console.log("v50");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
