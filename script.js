@@ -2,9 +2,11 @@
 document.documentElement.addEventListener("mousedown", () => {
   if (Tone.context.state !== "running") Tone.context.resume();
 });
-
+let is_running = false;
+let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
-console.log("v36");
+
+console.log("v37");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -28,9 +30,10 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 //   release: 0.1,
 //   decayCurve: "exponential",
 // }).connect(pitchShift);
-const Lyre = new Tone.Player(
-  "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3"
-).connect(pitchShift);
+const Lyre = new Tone.Player({
+  url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
+  onload: ready(),
+}).connect(pitchShift);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
   loop: true,
@@ -182,8 +185,10 @@ function handleMotion(event) {
   if (currentMovement === "5") trigger5(accel);
 }
 
-let is_running = false;
-let demo_button = document.getElementById("start_demo");
+function ready() {
+  demo_button.innerHTML = "START";
+  document.getElementById("circle").style.background = "green";
+}
 
 demo_button.onclick = function (e) {
   e.preventDefault();
@@ -213,17 +218,17 @@ demo_button.onclick = function (e) {
     window.addEventListener("deviceorientation", handleOrientation);
     document.getElementById("start_demo").innerHTML = "STOP";
     document.getElementById("circle").style.background = "red";
-    if (currentMovement === "1") {
+    if (currentMovement === "1" && Lyre.loaded) {
       Lyre.start();
     }
-    if (currentMovement === "3") {
+    if (currentMovement === "3" && Witches.loaded) {
       Witches.start();
     }
-    if (currentMovement === "4") {
+    if (currentMovement === "4" && Owl.loaded) {
       Owl.start();
       //Sooty.start();
     }
-    if (currentMovement === "5") {
+    if (currentMovement === "5" && Flute.loaded) {
       Flute.start();
     }
     gainNode.gain.rampTo(1, 0.1);
