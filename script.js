@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v51");
+console.log("v52");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -30,10 +30,9 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 //   release: 0.1,
 //   decayCurve: "exponential",
 // }).connect(pitchShift);
-const Lyre = new Tone.Player({
+const Lyre = new Tone.Player(
   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
-  onload: ready(),
-}).connect(pitchShift);
+).connect(pitchShift);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
   loop: true,
@@ -176,11 +175,6 @@ function handleMotion(event) {
   if (currentMovement === "5") trigger5(accel);
 }
 
-function ready() {
-  demo_button.innerHTML = "START";
-  document.getElementById("circle").style.background = "green";
-}
-
 demo_button.onclick = function (e) {
   e.preventDefault();
 
@@ -208,16 +202,16 @@ demo_button.onclick = function (e) {
     window.addEventListener("deviceorientation", handleOrientation);
     document.getElementById("start_demo").innerHTML = "STOP";
     document.getElementById("circle").style.background = "red";
-    if (currentMovement === "1" && Lyre.loaded) {
+    if (currentMovement === "1") {
       Lyre.start();
     }
-    if (currentMovement === "3" && Witches.loaded) {
+    if (currentMovement === "3") {
       Witches.start();
     }
-    if (currentMovement === "4" && Owl.loaded) {
+    if (currentMovement === "4") {
       Owl.start();
     }
-    if (currentMovement === "5" && Flute.loaded) {
+    if (currentMovement === "5") {
       Flute.start();
     }
     gainNode.gain.rampTo(1, 0.1);
@@ -235,14 +229,5 @@ document.addEventListener("visibilitychange", function () {
     Owl.stop();
     is_running = false;
     console.log("hidden");
-  }
-  if (document.visibilityState === "visible") {
-    // Request permission for iOS 13+ devices
-    if (
-      DeviceMotionEvent &&
-      typeof DeviceMotionEvent.requestPermission === "function"
-    ) {
-      DeviceMotionEvent.requestPermission();
-    }
   }
 });
