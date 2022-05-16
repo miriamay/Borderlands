@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v37");
+console.log("v38");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -30,6 +30,7 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 //   release: 0.1,
 //   decayCurve: "exponential",
 // }).connect(pitchShift);
+const pingPong = new Tone.PingPongDelay(0.2, 0.7);
 const Lyre = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
   onload: ready(),
@@ -55,14 +56,10 @@ const Frog4 = new Tone.Player(
 ).toDestination();
 const Witches = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/Witches.mp3"
-).connect(reverb);
-const Owl = new Tone.Player(
-  "https://miriamay.github.io/Borderlands/Audio/Owl2.mp3"
 ).connect(lowpass);
-// const Sooty = new Tone.Player({
-//   url: "https://miriamay.github.io/Borderlands/Audio/Sooty.mp3",
-//   loop: true,
-// }).connect(pitchShift);
+const Owl = new Tone.Player(
+  "https://miriamay.github.io/Borderlands/Audio/OwlNatural.mp3"
+).connect(lowpass);
 
 function scaleValue(value, from, to) {
   let scale = (to[1] - to[0]) / (from[1] - from[0]);
@@ -131,7 +128,7 @@ movement.onchange = function () {
   if (currentMovement !== "3") {
     Witches.stop();
   } else {
-    reverb.decay = 10;
+    //reverb.decay = 10;
   }
   if (currentMovement !== "4") {
     Owl.stop();
@@ -153,13 +150,11 @@ function handleOrientation(event) {
     if (event.beta >= 100) pitchShift.pitch = -9;
   }
   if (currentMovement === "3") {
-    reverb.wet.value = scaleValue(event.beta, [-50, 150], [0, 1]);
+    //reverb.wet.value = scaleValue(event.beta, [-50, 150], [0, 1]);
+    lowpass.frequency.value = powerScale(event.beta);
   }
   if (currentMovement === "4") {
     lowpass.frequency.value = powerScale(event.beta);
-    //Sooty.volume.value = scaleValue(Math.abs(event.gamma), [0, 90], [-36, 0]);
-    //Owl.volume.value = clamp(-16 - Sooty.volume.value, -36, 0);
-    //}
     // phaser.frequency.value = scaleValue(event.beta, [-50, 150], [0, 15]);
     // phaser.baseFrequency = scaleValue(
     //   Math.abs(event.gamma),
@@ -180,7 +175,6 @@ function handleMotion(event) {
     event.acceleration.x ** 2 +
     event.acceleration.y ** 2 +
     event.acceleration.z ** 2;
-  //Sooty.volume.value = scaleValue(accel, [0, 10], [-24, 0]);
   if (currentMovement === "2") trigger2(accel);
   if (currentMovement === "5") trigger5(accel);
 }
@@ -211,7 +205,6 @@ demo_button.onclick = function (e) {
     Flute.stop();
     Witches.stop();
     Owl.stop();
-    //Sooty.stop();
     is_running = false;
   } else {
     window.addEventListener("devicemotion", handleMotion);
@@ -226,7 +219,6 @@ demo_button.onclick = function (e) {
     }
     if (currentMovement === "4" && Owl.loaded) {
       Owl.start();
-      //Sooty.start();
     }
     if (currentMovement === "5" && Flute.loaded) {
       Flute.start();
