@@ -30,9 +30,10 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 //   release: 0.1,
 //   decayCurve: "exponential",
 // }).connect(pitchShift);
-const Lyre = new Tone.Player(
+const Lyre = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
-).connect(pitchShift);
+  onload: ready(),
+}).connect(pitchShift);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
   loop: true,
@@ -173,6 +174,11 @@ function handleMotion(event) {
     event.acceleration.z ** 2;
   if (currentMovement === "2") trigger2(accel);
   if (currentMovement === "5") trigger5(accel);
+}
+
+function ready() {
+  demo_button.innerHTML = "START";
+  document.getElementById("circle").style.background = "green";
 }
 
 demo_button.onclick = function (e) {
