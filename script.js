@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v46");
+console.log("v47");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -222,8 +222,8 @@ demo_button.onclick = function (e) {
   }
 };
 
-document.addEventListener("visibilitychange", function() {
-  if (document.visibilityState !== 'visible') {
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === "hidden") {
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
     Lyre.stop();
@@ -231,5 +231,6 @@ document.addEventListener("visibilitychange", function() {
     Witches.stop();
     Owl.stop();
     is_running = false;
-  } 
+    console.log("hidden");
+  }
 });
