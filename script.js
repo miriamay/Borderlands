@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v38");
+console.log("v39");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -30,7 +30,7 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 //   release: 0.1,
 //   decayCurve: "exponential",
 // }).connect(pitchShift);
-const pingPong = new Tone.PingPongDelay(0.2, 0.7);
+const pingPong = new Tone.PingPongDelay(0.2, 0.7).connect(gainNode);
 const Lyre = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
   onload: ready(),
@@ -59,7 +59,7 @@ const Witches = new Tone.Player(
 ).connect(lowpass);
 const Owl = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/OwlNatural.mp3"
-).connect(lowpass);
+).connect(pingPong);
 
 function scaleValue(value, from, to) {
   let scale = (to[1] - to[0]) / (from[1] - from[0]);
@@ -71,7 +71,7 @@ function scaleValue(value, from, to) {
 let powerScale = d3
   .scalePow()
   .exponent(2)
-  .domain([-32, 140])
+  .domain([-80, 140])
   .range([200, 8000])
   .clamp(true);
 
@@ -150,11 +150,12 @@ function handleOrientation(event) {
     if (event.beta >= 100) pitchShift.pitch = -9;
   }
   if (currentMovement === "3") {
-    //reverb.wet.value = scaleValue(event.beta, [-50, 150], [0, 1]);
+    reverb.wet.value = scaleValue(event.beta, [-50, 150], [0, 1]);
     lowpass.frequency.value = powerScale(event.beta);
   }
   if (currentMovement === "4") {
-    lowpass.frequency.value = powerScale(event.beta);
+    //lowpass.frequency.value = powerScale(event.beta);
+    pingPong.wet.value = scaleValue(Math.abs(event.gamma), [0, 90], [0, 1]);
     // phaser.frequency.value = scaleValue(event.beta, [-50, 150], [0, 15]);
     // phaser.baseFrequency = scaleValue(
     //   Math.abs(event.gamma),
