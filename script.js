@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v57");
+console.log("v58");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -181,14 +181,9 @@ function ready() {
   document.getElementById("circle").style.background = "green";
 }
 
-console.log("currentMovementA" + currentMovement);
-console.log("LyreA" + Lyre.state);
-console.log("FrogsA" + Frog1.state + Frog2.state + Frog3.state + Frog4.state);
-console.log("WitchesA" + Witches.state);
-console.log("OwlA" + Owl.state);
-console.log("FluteA" + Flute.state);
-console.log("demoA" + demo_button.innerHTML);
-console.log("is runningA" + is_running);
+console.log("currentMovement" + currentMovement);
+console.log("Lyre" + Lyre.state);
+console.log("is running" + is_running);
 
 demo_button.onclick = function (e) {
   e.preventDefault();
@@ -236,15 +231,25 @@ demo_button.onclick = function (e) {
 
 document.addEventListener("visibilitychange", function () {
   if (
-    document.visibilityState === "hidden"
-  )
-    Tone.context.resume();
+    document.visibilityState === "visible" &&
+    Tone.context.state !== "running"
+  ) {
+    document.documentElement.addEventListener("mousedown", () => {
+      if (Tone.context.state !== "running") Tone.context.resume();
+    });
+  } 
+  if (document.visibilityState === "hidden") {
+    console.log("hidden");
+    demo_button.innerHTML = "START";
+    document.getElementById("circle").style.background = "green";
+    gainNode.gain.rampTo(0, 0.1);
+    Lyre.stop();
+    Flute.stop();
+    Witches.stop();
+    Owl.stop();
+    is_running = false;
+  }
   console.log("currentMovement" + currentMovement);
   console.log("Lyre" + Lyre.state);
-  console.log("Frogs" + Frog1.state + Frog2.state + Frog3.state + Frog4.state);
-  console.log("Witches" + Witches.state);
-  console.log("Owl" + Owl.state);
-  console.log("Flute" + Flute.state);
-  console.log("demo" + demo_button.innerHTML);
   console.log("is running" + is_running);
 });
