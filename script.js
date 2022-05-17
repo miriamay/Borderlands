@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v56");
+console.log("v57");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -181,14 +181,14 @@ function ready() {
   document.getElementById("circle").style.background = "green";
 }
 
-console.log("currentMovement" + currentMovement);
-console.log("Lyre" + Lyre.state);
-console.log("Frogs" + Frog1.state + Frog2.state + Frog3.state + Frog4.state);
-console.log("Witches" + Witches.state);
-console.log("Owl" + Owl.state);
-console.log("Flute" + Flute.state);
-console.log("demo" + demo_button.innerHTML);
-console.log("is running" + is_running);
+console.log("currentMovementA" + currentMovement);
+console.log("LyreA" + Lyre.state);
+console.log("FrogsA" + Frog1.state + Frog2.state + Frog3.state + Frog4.state);
+console.log("WitchesA" + Witches.state);
+console.log("OwlA" + Owl.state);
+console.log("FluteA" + Flute.state);
+console.log("demoA" + demo_button.innerHTML);
+console.log("is runningA" + is_running);
 
 demo_button.onclick = function (e) {
   e.preventDefault();
@@ -236,8 +236,7 @@ demo_button.onclick = function (e) {
 
 document.addEventListener("visibilitychange", function () {
   if (
-    document.visibilityState === "visible" &&
-    Tone.context.state !== "running"
+    document.visibilityState === "hidden"
   )
     Tone.context.resume();
   console.log("currentMovement" + currentMovement);
