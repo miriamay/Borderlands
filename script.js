@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v55");
+console.log("v52");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -32,7 +32,7 @@ const pitchShift = new Tone.PitchShift(0).connect(reverb);
 // }).connect(pitchShift);
 const Lyre = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
-  //onload: ready(),
+  onload: ready(),
 }).connect(pitchShift);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
@@ -176,10 +176,19 @@ function handleMotion(event) {
   if (currentMovement === "5") trigger5(accel);
 }
 
-// function ready() {
-//   demo_button.innerHTML = "START";
-//   document.getElementById("circle").style.background = "green";
-// }
+function ready() {
+  demo_button.innerHTML = "START";
+  document.getElementById("circle").style.background = "green";
+}
+
+console.log("currentMovement" + currentMovement);
+console.log("Lyre" + Lyre.state);
+console.log("Frogs" + Frog1.state + Frog2.state + Frog3.state + Frog4.state);
+console.log("Witches" + Witches.state);
+console.log("Owl" + Owl.state);
+console.log("Flute" + Flute.state);
+console.log("demo" + demo_button.innerHTML);
+console.log("is running" + is_running);
 
 demo_button.onclick = function (e) {
   e.preventDefault();
@@ -226,13 +235,17 @@ demo_button.onclick = function (e) {
 };
 
 document.addEventListener("visibilitychange", function () {
-  if (document.visibilityState === "hidden") {
-    demo_button.innerHTML = "START";
-    document.getElementById("circle").style.background = "green";
-//     Lyre.stop();
-//     Flute.stop();
-//     Witches.stop();
-//     Owl.stop();
-    is_running = false;
-  }
+  if (
+    document.visibilityState === "visible" &&
+    Tone.context.state !== "running"
+  )
+    Tone.context.resume();
+  console.log("currentMovement" + currentMovement);
+  console.log("Lyre" + Lyre.state);
+  console.log("Frogs" + Frog1.state + Frog2.state + Frog3.state + Frog4.state);
+  console.log("Witches" + Witches.state);
+  console.log("Owl" + Owl.state);
+  console.log("Flute" + Flute.state);
+  console.log("demo" + demo_button.innerHTML);
+  console.log("is running" + is_running);
 });
