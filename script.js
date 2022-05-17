@@ -6,7 +6,7 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v54");
+console.log("v55");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
@@ -229,11 +229,10 @@ document.addEventListener("visibilitychange", function () {
   if (document.visibilityState === "hidden") {
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
-    Lyre.stop();
-    Flute.stop();
-    Witches.stop();
-    Owl.stop();
+//     Lyre.stop();
+//     Flute.stop();
+//     Witches.stop();
+//     Owl.stop();
     is_running = false;
-    console.log("hidden");
   }
 });
