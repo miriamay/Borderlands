@@ -6,14 +6,14 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v12");
+console.log("v13");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
 const reverb = new Tone.Reverb(3).connect(gainNode);
 reverb.wet.value = 0.4;
 const lowpass = new Tone.Filter({
-  Q: 1,
+  Q: 5,
   frequency: 1000,
   type: "bandpass",
 }).connect(reverb);
@@ -137,7 +137,7 @@ demo_button.onclick = function (e) {
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
     myShakeEvent.stop();
-    gainNode.gain.rampTo(0, 1);
+    gainNode.gain.rampTo(0, 3);
     Lyre.stop();
     Flute.stop();
     Witches.stop();
@@ -178,7 +178,7 @@ document.addEventListener("visibilitychange", function () {
   if (document.visibilityState === "hidden") {
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
-    gainNode.gain.rampTo(0, 1);
+    gainNode.gain.rampTo(0, 3);
     Lyre.stop();
     Flute.stop();
     Witches.stop();
