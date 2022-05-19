@@ -13,9 +13,9 @@ const gainNode2 = new Tone.Gain(0).connect(gainNode);
 const reverb = new Tone.Reverb(3).connect(gainNode);
 reverb.wet.value = 0.4;
 const lowpass = new Tone.Filter({
-  Q: 10,
-  frequency: 18000,
-  type: "lowpass",
+  Q: 1,
+  frequency: 1000,
+  type: "bandpass",
 }).connect(reverb);
 const Lyre = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
@@ -137,7 +137,7 @@ demo_button.onclick = function (e) {
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
     myShakeEvent.stop();
-    gainNode.gain.rampTo(0, 0.1);
+    gainNode.gain.rampTo(0, 1);
     Lyre.stop();
     Flute.stop();
     Witches.stop();
@@ -178,7 +178,7 @@ document.addEventListener("visibilitychange", function () {
   if (document.visibilityState === "hidden") {
     demo_button.innerHTML = "START";
     document.getElementById("circle").style.background = "green";
-    gainNode.gain.rampTo(0, 0.1);
+    gainNode.gain.rampTo(0, 1);
     Lyre.stop();
     Flute.stop();
     Witches.stop();
