@@ -6,21 +6,21 @@ let is_running = false;
 let demo_button = document.getElementById("start_demo");
 let currentMovement = "1";
 
-console.log("v14");
+console.log("v16");
 
 const gainNode = new Tone.Gain(0).toDestination();
 const gainNode2 = new Tone.Gain(0).connect(gainNode);
-const reverb = new Tone.Reverb(3).connect(gainNode);
-reverb.wet.value = 0.4;
-const lowpass = new Tone.Filter({
-  Q: 1,
-  frequency: 1000,
-  type: "bandpass",
-}).connect(reverb);
-const Lyre = new Tone.Player({
-  url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
-  onload: ready(),
-}).connect(gainNode2);
+// const reverb = new Tone.Reverb(3).connect(gainNode);
+// reverb.wet.value = 0.4;
+// const lowpass = new Tone.Filter({
+//   Q: 1,
+//   frequency: 1000,
+//   type: "bandpass",
+// }).connect(reverb);
+// const Lyre = new Tone.Player({
+//   url: "https://miriamay.github.io/Borderlands/Audio/LyreNatural.mp3",
+//   onload: ready(),
+// }).connect(gainNode2);
 const Flute = new Tone.Player({
   url: "https://miriamay.github.io/Borderlands/Audio/Flute.mp3",
   loop: true,
@@ -40,9 +40,9 @@ const Frog3 = new Tone.Player(
 const Frog4 = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/Frog4.mp3"
 ).toDestination();
-const Witches = new Tone.Player(
-  "https://miriamay.github.io/Borderlands/Audio/Witches2.mp3"
-).connect(lowpass);
+// const Witches = new Tone.Player(
+//   "https://miriamay.github.io/Borderlands/Audio/Witches2.mp3"
+// ).connect(lowpass);
 const Owl = new Tone.Player(
   "https://miriamay.github.io/Borderlands/Audio/OwlNatural.mp3"
 ).connect(gainNode2);
@@ -53,13 +53,13 @@ function scaleValue(value, from, to) {
   return capped * scale + to[0];
 }
 
-//exponential scale
-let powerScale = d3
-  .scalePow()
-  .exponent(2)
-  .domain([0, 180])
-  .range([200, 8000])
-  .clamp(true);
+// //exponential scale
+// let powerScale = d3
+//   .scalePow()
+//   .exponent(2)
+//   .domain([0, 180])
+//   .range([200, 8000])
+//   .clamp(true);
 
 const frogDict = {
   1: Frog1,
@@ -71,15 +71,15 @@ const frogDict = {
 //listen for updates to movement
 movement.onchange = function () {
   currentMovement = movement.value;
-  if (currentMovement !== "1") {
-    Lyre.stop();
-  } else {
-    //reverb.wet.value = 0.4;
-    //reverb.decay = 3;
-  }
-  if (currentMovement !== "3") {
-    Witches.stop();
-  }
+  // if (currentMovement !== "1") {
+  //   Lyre.stop();
+  // } else {
+  //   //reverb.wet.value = 0.4;
+  //   //reverb.decay = 3;
+  // }
+  // if (currentMovement !== "3") {
+  //   Witches.stop();
+  // }
   if (currentMovement !== "4") {
     Owl.stop();
   }
@@ -90,15 +90,15 @@ movement.onchange = function () {
 };
 
 function handleOrientation(event) {
-  if (currentMovement === "1") {
-    gainNode2.gain.rampTo(
-      scaleValue(Math.abs(event.beta), [0, 180], [0, 1]),
-      0.05
-    );
-  }
-  if (currentMovement === "3") {
-    lowpass.frequency.value = powerScale(Math.abs(event.beta));
-  }
+  // if (currentMovement === "1") {
+  //   gainNode2.gain.rampTo(
+  //     scaleValue(Math.abs(event.beta), [0, 180], [0, 1]),
+  //     0.05
+  //   );
+  // }
+  // if (currentMovement === "3") {
+  //   lowpass.frequency.value = powerScale(Math.abs(event.beta));
+  // }
   if (currentMovement === "4") {
     gainNode2.gain.rampTo(
       scaleValue(Math.abs(event.beta), [0, 180], [0, 1]),
@@ -114,10 +114,10 @@ function handleOrientation(event) {
 
 function handleMotion(event) {}
 
-function ready() {
-  demo_button.innerHTML = "START";
-  document.getElementById("circle").style.background = "green";
-}
+// function ready() {
+//   demo_button.innerHTML = "START";
+//   document.getElementById("circle").style.background = "green";
+// }
 
 demo_button.onclick = function (e) {
   e.preventDefault();
@@ -139,9 +139,9 @@ demo_button.onclick = function (e) {
     myShakeEvent.stop();
     gainNode.gain.rampTo(0, 1);
     setTimeout(function () {
-      Lyre.stop();
+      //Lyre.stop();
       Flute.stop();
-      Witches.stop();
+      //Witches.stop();
       Owl.stop();
     }, 1000);
     is_running = false;
@@ -151,15 +151,15 @@ demo_button.onclick = function (e) {
     window.addEventListener("shake", shakeEventDidOccur, false);
     document.getElementById("start_demo").innerHTML = "STOP";
     document.getElementById("circle").style.background = "red";
-    if (currentMovement === "1") {
-      Lyre.start();
-    }
+    // if (currentMovement === "1") {
+    //   Lyre.start();
+    // }
     if (currentMovement === "2") {
       myShakeEvent.start();
     }
-    if (currentMovement === "3") {
-      Witches.start();
-    }
+    // if (currentMovement === "3") {
+    //   Witches.start();
+    // }
     if (currentMovement === "4") {
       Owl.start();
     }
@@ -182,9 +182,9 @@ document.addEventListener("visibilitychange", function () {
     document.getElementById("circle").style.background = "green";
     gainNode.gain.rampTo(0, 1);
     setTimeout(function () {
-      Lyre.stop();
+      //Lyre.stop();
       Flute.stop();
-      Witches.stop();
+      //Witches.stop();
       Owl.stop();
     }, 1000);
     is_running = false;
